@@ -75,7 +75,7 @@ public class StormRunner {
         driver.addApp("bargainindex"        , BargainIndexTopology.class);
         driver.addApp("clickanalytics"      , ClickAnalyticsTopology.class);
         driver.addApp("frauddetection"      , FraudDetectionTopology.class);
-        driver.addApp("linearroad"          , LinearRoadTopology.class);
+        //driver.addApp("linearroad"          , LinearRoadTopology.class);
         driver.addApp("logprocessing"       , LogProcessingTopology.class);
         driver.addApp("machineoutlier"      , MachineOutlierTopology.class);
         driver.addApp("reinforcementlearner", ReinforcementLearnerTopology.class);
@@ -189,6 +189,7 @@ public class StormRunner {
      */
     public static void runTopologyRemotely(StormTopology topology, String topologyName,
             Config conf) throws Exception {
+        conf.put("topologyName", topologyName);
         StormSubmitter.submitTopology(topologyName, conf, topology);
     }
     

@@ -23,11 +23,6 @@ public class GeoFinder extends BaseFunction implements PairFunction<Tuple2<Long,
         this.dbPath = config.get(Configuration.GEOIP2_DB);
     }
 
-    @Override
-    public void Calculate() throws InterruptedException {
-
-    }
-
     public IPLocation getResolver() {
         if (resolver == null) {
             resolver = new GeoIP2Location(this.dbPath);
@@ -38,7 +33,7 @@ public class GeoFinder extends BaseFunction implements PairFunction<Tuple2<Long,
     
     @Override
     public Tuple2<String, Tuple> call(Tuple2<Long, Tuple> t) throws Exception {
-        incReceived();
+        //incReceived();
         String ip = t._2.getString("ip");
         
         Location location = getResolver().resolve(ip);
@@ -52,7 +47,7 @@ public class GeoFinder extends BaseFunction implements PairFunction<Tuple2<Long,
                 tuple.set("city", city);
                 tuple.set("count", 1L);
 
-                incEmitted();
+                //incEmitted();
                 return new Tuple2<>(country, tuple);
             }
         }

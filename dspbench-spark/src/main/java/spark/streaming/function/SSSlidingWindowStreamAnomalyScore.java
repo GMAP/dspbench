@@ -38,19 +38,9 @@ public class SSSlidingWindowStreamAnomalyScore extends BaseFunction implements M
         slidingWindowMap = new HashMap<>();
         previousTimestamp = 0;
     }
-    @Override
-    public void Calculate() throws InterruptedException {
-        Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-        throughput = d._1;
-        queue = d._2;
-        if (queue.size() >= 10) {
-            super.SaveMetrics(queue.take());
-        }
-    }
 
     @Override
     public Row call(Row input) throws Exception {
-        Calculate();
         long timestamp = input.getLong(2); //TODO change to window spark method
         String id = input.getString(0);
         double dataInstanceAnomalyScore = input.getDouble(1);
@@ -71,7 +61,7 @@ public class SSSlidingWindowStreamAnomalyScore extends BaseFunction implements M
         for (double score : slidingWindow) {
             sumScore += score;
         }
-
+        incBoth();
         return RowFactory.create(id, sumScore, timestamp, input.get(3), dataInstanceAnomalyScore, input.get(input.size() - 1));
     }
 }

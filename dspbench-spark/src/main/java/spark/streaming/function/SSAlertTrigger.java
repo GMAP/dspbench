@@ -33,20 +33,10 @@ public class SSAlertTrigger extends BaseFunction implements FlatMapFunction<Row,
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-        Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-        throughput = d._1;
-        queue = d._2;
-        if (queue.size() >= 10) {
-            super.SaveMetrics(queue.take());
-        }
-    }
-
-    @Override
     public Iterator<Row> call(Row input) throws Exception {
-        Calculate();
         long timestamp = input.getLong(2);
         List<Row> tuples = new ArrayList<>();
+        incReceived();
         if (timestamp > previousTimestamp) {
             // new batch of stream scores
             if (!streamList.isEmpty()) {
@@ -69,6 +59,7 @@ public class SSAlertTrigger extends BaseFunction implements FlatMapFunction<Row,
                     }
 
                     if (isAbnormal) {
+                        incEmitted();
                         tuples.add(RowFactory.create(streamProfile.getString(0), streamScore, streamProfile.getLong(2), isAbnormal, streamProfile.get(3), input.get(input.size() - 1)));
                     }
                 }

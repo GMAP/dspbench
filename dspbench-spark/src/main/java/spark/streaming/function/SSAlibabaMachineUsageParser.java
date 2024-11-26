@@ -31,19 +31,8 @@ public class SSAlibabaMachineUsageParser extends BaseFunction implements MapFunc
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-        Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-        throughput = d._1;
-        queue = d._2;
-        if (queue.size() >= 10) {
-            super.SaveMetrics(queue.take());
-        }
-    }
-
-
-    @Override
     public Row call(String value) throws Exception {
-        Calculate();
+        incReceived();
         String[] items = value.split(",");
 
         if (items.length != 9)
@@ -53,11 +42,10 @@ public class SSAlibabaMachineUsageParser extends BaseFunction implements MapFunc
         long timestamp = Long.parseLong(items[TIMESTAMP]) * 1000;
         double cpu = Double.parseDouble(items[CPU]);
         double memory = Double.parseDouble(items[MEMORY]);
-
+        incEmitted();
         return RowFactory.create(id,
                 timestamp,
-                new MachineMetadata(timestamp, id, cpu, memory),
-                Instant.now().toEpochMilli()
+                new MachineMetadata(timestamp, id, cpu, memory)
         );
     }
 }

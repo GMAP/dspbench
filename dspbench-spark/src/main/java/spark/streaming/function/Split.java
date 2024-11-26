@@ -21,23 +21,9 @@ public class Split extends BaseFunction implements FlatMapFunction<Row, Row> {
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-       /* Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-        throughput = d._1;
-        queue = d._2;
-        if (queue.size() >= 1) {
-            super.SaveMetrics(queue.take());
-        }*/
-    }
-
-    private static Map<String, Long> throughput = new HashMap<>();
-
-    private static BlockingQueue<String> queue= new ArrayBlockingQueue<>(20);
-
-    @Override
     public Iterator<Row> call(Row s) throws Exception {
         incReceived();
-        Calculate();
+        //receiveThroughput();
         String[] words = s.getString(0).split("\\W");
         List<Row> tuples = new ArrayList<>();
 
@@ -45,6 +31,7 @@ public class Split extends BaseFunction implements FlatMapFunction<Row, Row> {
             if (!StringUtils.isBlank(word)){
                 tuples.add(RowFactory.create(word));
                 incEmitted();
+                //emittedThroughput();
             }
         }
         return tuples.iterator();

@@ -2,7 +2,7 @@ package flink.constants;
 
 public interface SpamFilterConstants extends BaseConstants {
     String PREFIX = "sf";
-    String DEFAULT_WORDMAP = "/spamfilter/wordmap.bin";
+    String DEFAULT_WORDMAP = "/spamfilter/wordmap.json";
 
     interface Conf extends BaseConf {
         String TRAINING_SOURCE_THREADS = "sf.training.source.threads";

@@ -16,13 +16,8 @@ public class CountSingleStatus extends BaseFunction implements PairFunction<Tupl
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-
-    }
-
-    @Override
     public Tuple2<Integer, Tuple> call(Tuple2<Long, Tuple> input) throws Exception {
-        incBoth();
+        //incBoth();
         
         Tuple t = new Tuple(input._2);
         t.set("count", 1L);

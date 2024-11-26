@@ -22,20 +22,10 @@ public class SSSpeedCalculator extends BaseFunction implements MapGroupsWithStat
     public SSSpeedCalculator(Configuration config) {
         super(config);
     }
-    private static Map<String, Long> throughput = new HashMap<>();
 
-    private static BlockingQueue<String> queue= new ArrayBlockingQueue<>(20);
-    @Override
-    public void Calculate() throws InterruptedException {
-        Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-        throughput = d._1;
-        queue = d._2;
-        if (queue.size() >= 10) {
-            super.SaveMetrics(queue.take());
-        }
-    }
     @Override
     public Row call(Integer key, Iterator<Row> values, GroupState<Road> state) throws Exception {
+        incReceived();
         if (key == 0) return null;
 
         int roadID = key;
@@ -43,7 +33,6 @@ public class SSSpeedCalculator extends BaseFunction implements MapGroupsWithStat
         int count = 0;
         long inittime = 0;
         while (values.hasNext()) {
-            Calculate();
             Row tuple = values.next();
             inittime = tuple.getLong(tuple.size() - 1);
 
@@ -98,6 +87,7 @@ public class SSSpeedCalculator extends BaseFunction implements MapGroupsWithStat
                 state.update(road);
             }
         }
+        incEmitted();
         return RowFactory.create(new Date(), roadID, averageSpeed, count, inittime);
     }
 }

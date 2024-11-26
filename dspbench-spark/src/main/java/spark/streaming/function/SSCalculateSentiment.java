@@ -36,30 +36,17 @@ public class SSCalculateSentiment extends BaseFunction implements MapFunction<Ro
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-        Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-        throughput = d._1;
-        queue = d._2;
-        if (queue.size() >= 10) {
-            super.SaveMetrics(queue.take());
-        }
-    }
-
-
-    @Override
     public Row call(Row input) throws Exception {
-        Calculate();
         String tweetId = input.getString(0);
         String text = input.getString(1);
         String timestamp = new DateTime(input.get(2)).toString();
 
         SentimentResult result = classifier.classify(text);
-
+        incBoth();
         return RowFactory.create(tweetId,
                 text,
                 timestamp,
                 result.getSentiment().toString(),
-                result.getScore(),
-                input.get(input.size() - 1));
+                result.getScore());
     }
 }

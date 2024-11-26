@@ -15,19 +15,14 @@ public class CountWordPairs extends BaseFunction implements Function2<Tuple, Tup
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-
-    }
-
-    @Override
     public Tuple call(Tuple tupleOne, Tuple tupleTwo) throws Exception {
-        incReceived(2);
+        //incReceived(2);
         
         //long ts = (tupleOne.getCreatedAt() < tupleTwo.getCreatedAt()) ? tupleOne.getCreatedAt() : tupleTwo.getCreatedAt();
         Tuple newTuple = new Tuple(tupleOne, tupleTwo);
         newTuple.set("count", (long)tupleOne.get("count") + (long)tupleTwo.get("count"));
         
-        incEmitted();
+        //incEmitted();
         return newTuple;
     }
 }

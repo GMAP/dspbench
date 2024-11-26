@@ -48,7 +48,7 @@ public class SpamFilterTopology extends AbstractTopology {
     @Override
     public StormTopology buildTopology() {
         trainingSpout.setFields(new Fields(SpamFilterConstants.Field.ID, SpamFilterConstants.Field.MESSAGE, SpamFilterConstants.Field.IS_SPAM));
-        analysisSpout.setFields(new Fields(SpamFilterConstants.Field.ID, SpamFilterConstants.Field.MESSAGE));
+        analysisSpout.setFields(new Fields(SpamFilterConstants.Field.ID, SpamFilterConstants.Field.MESSAGE, SpamFilterConstants.Field.IS_SPAM));
         
         builder.setSpout(SpamFilterConstants.Component.TRAINING_SPOUT, trainingSpout, trainingSpoutThreads);
         builder.setSpout(SpamFilterConstants.Component.ANALYSIS_SPOUT, analysisSpout, analysisSpoutThreads);

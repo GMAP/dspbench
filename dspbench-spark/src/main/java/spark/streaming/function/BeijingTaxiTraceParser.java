@@ -31,13 +31,8 @@ public class BeijingTaxiTraceParser extends BaseFunction implements Function<Tup
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-
-    }
-
-    @Override
     public Tuple2<Integer, Tuple> call(Tuple2<String, Tuple> t) throws Exception {
-        incReceived();
+        //incReceived();
         
         String[] fields = t._1.replace("\"", "").split(",");
         Tuple tuple = t._2;
@@ -59,7 +54,7 @@ public class BeijingTaxiTraceParser extends BaseFunction implements Function<Tup
             
             int msgId = String.format("%s:%s", carId, date.toString()).hashCode();
             
-            incEmitted();
+            //incEmitted();
             return new Tuple2<>(msgId, tuple);
         } catch (NumberFormatException ex) {
             LOG.error("Error parsing numeric value", ex);

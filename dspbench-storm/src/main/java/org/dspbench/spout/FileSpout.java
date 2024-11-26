@@ -6,10 +6,9 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.storm.tuple.Fields;
-import org.dspbench.applications.wordcount.WordCountConstants;
 import org.dspbench.constants.BaseConstants;
 import org.dspbench.util.config.ClassLoaderUtils;
 import org.dspbench.util.config.Configuration;
@@ -18,6 +17,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.dspbench.spout.parser.Parser;
 import org.dspbench.util.stream.StreamValues;
+
+import org.apache.storm.utils.NimbusClient;
+import org.apache.storm.utils.Utils;
+import org.apache.storm.generated.AuthorizationException;
+import org.apache.storm.generated.KillOptions;
+import org.apache.storm.generated.Nimbus.Iface;
+import org.apache.storm.generated.NotAliveException;
+import org.apache.storm.thrift.TException;
 
 /**
  * 
@@ -39,9 +46,9 @@ public class FileSpout extends AbstractSpout {
     @Override
     public void initialize() {
         taskId   = context.getThisTaskIndex();//context.getThisTaskId();
-        numTasks = config.getInt(getConfigKey(BaseConstants.BaseConf.SPOUT_THREADS));
+        numTasks = config.getInt(getConfigKey(BaseConstants.BaseConf.SPOUT_THREADS, true));
         
-        String parserClass = config.getString(getConfigKey(BaseConstants.BaseConf.SPOUT_PARSER));
+        String parserClass = config.getString(getConfigKey(BaseConstants.BaseConf.SPOUT_PARSER, true));
         parser = (Parser) ClassLoaderUtils.newInstance(parserClass, "parser", LOG);
         parser.initialize(config);
         
@@ -50,7 +57,7 @@ public class FileSpout extends AbstractSpout {
     }
     
     protected void buildIndex() {
-        String path = config.getString(getConfigKey(BaseConstants.BaseConf.SPOUT_PATH));
+        String path = config.getString(getConfigKey(BaseConstants.BaseConf.SPOUT_PATH, true));
         if (StringUtils.isBlank(path)) {
             LOG.error("The source path has not been set");
             throw new RuntimeException("The source path has to beeen set");
@@ -85,20 +92,41 @@ public class FileSpout extends AbstractSpout {
     @Override
     public void nextTuple() {
         String value = readFile();
-        
-        if (value == null)
+        /*
+        if (value == null){
+            Map conf = Utils.readStormConfig();
+            NimbusClient cc = NimbusClient.getConfiguredClient(conf);
+            Iface client = cc.getClient();
+            KillOptions opts = new KillOptions();
+            opts.set_wait_secs(120);
+            try {
+                client.killTopologyWithOpts(config.getString("topologyName"), opts);
+            } catch (NotAliveException e) {
+                LOG.info("Tried to kill topology, but NotAlive");
+                e.printStackTrace();
+            } catch (AuthorizationException e) {
+                LOG.info("Tried to kill topology, but AuthorizationException");
+                e.printStackTrace();
+            } catch (TException e) {
+                LOG.info("Tried to kill topology, but TException");
+                e.printStackTrace();
+            }
+
             return;
-        
-        List<StreamValues> tuples = parser.parse(value);
-        long unixTime = 0;
-        if (tuples != null) {
-            for (StreamValues values : tuples) {
-                String msgId = String.format("%d%d", curFileIndex, curLineIndex);
-                collector.emit(values.getStreamId(), values, msgId);
+        }
+        */
+        if (value != null) {
+            List<StreamValues> tuples = parser.parse(value);
+            long unixTime = 0;
+            if (tuples != null) {
+                for (StreamValues values : tuples) {
+                    String msgId = String.format("%d%d", curFileIndex, curLineIndex);
+                    collector.emit(values.getStreamId(), values, msgId);
+                }
             }
         }
         if (!config.getBoolean(Configuration.METRICS_ONLY_SINK, false)) {
-            recemitThroughput();
+            emittedThroughput();
         }
     }
 

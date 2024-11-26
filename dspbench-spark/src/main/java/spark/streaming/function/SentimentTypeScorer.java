@@ -13,11 +13,6 @@ import java.util.Set;
  * @author mayconbordin
  */
 public class SentimentTypeScorer extends BaseFunction implements PairFunction<Tuple2<Long, Tuple>, Long, Tuple2<Tuple, Float>> {
-    @Override
-    public void Calculate() throws InterruptedException {
-
-    }
-
     public static enum Type {Positive, Negative}
     
     private final Type type;
@@ -48,7 +43,7 @@ public class SentimentTypeScorer extends BaseFunction implements PairFunction<Tu
                 numSentimentWords++;
         }
         
-        incBoth();
+        //incBoth();
         return new Tuple2<>(t._1, new Tuple2<>(t._2, (float)numSentimentWords / numWords));
     }
     

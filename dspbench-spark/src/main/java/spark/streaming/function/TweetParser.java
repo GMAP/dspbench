@@ -18,11 +18,6 @@ public class TweetParser extends BaseFunction implements Function<Tuple2<String,
         super(config);
     }
 
-    @Override
-    public void Calculate() throws InterruptedException {
-
-    }
-
     private JSONParser getParser() {
         if (parser == null) {
             parser = new JSONParser();
@@ -38,7 +33,7 @@ public class TweetParser extends BaseFunction implements Function<Tuple2<String,
         t._2.set("lang", obj.get("lang"));
         t._2.set("text", obj.get("text"));
         
-        incBoth();
+        //incBoth();
         return new Tuple2<>(id, t._2);
     }
 

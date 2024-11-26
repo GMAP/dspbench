@@ -64,7 +64,9 @@ public class StruturedStreamingRunner {
         driver.addApp("machineoutlier", MachineOutlier.class);
         driver.addApp("logprocessing", LogProcessing.class);
         driver.addApp("smartgrid", SmartGrid.class);
+        driver.addApp("trendingtopics", TrendingTopics.class);
     }
+
 
     public void run() throws InterruptedException {
         // Loads the configuration file set by the user or the default configuration

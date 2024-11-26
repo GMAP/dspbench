@@ -6,6 +6,7 @@ import org.apache.storm.tuple.Values;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.dspbench.applications.bargainindex.BargainIndexConstants.Component;
 import org.dspbench.applications.bargainindex.BargainIndexConstants.Conf;
 import org.dspbench.applications.bargainindex.BargainIndexConstants.Field;
 import org.dspbench.applications.bargainindex.BargainIndexConstants.Stream;
@@ -43,7 +44,7 @@ public class BargainIndexBolt extends AbstractBolt {
         }
         String stream = input.getSourceStreamId();
         
-        if (stream.equals(Stream.QUOTES)) {
+        if (input.getSourceComponent().equals(Component.QUOTES_SPOUT)) {
             String stock    = input.getStringByField(Field.STOCK);
             double askPrice = input.getDoubleByField(Field.PRICE);
             int askSize     = input.getIntegerByField(Field.VOLUME);
@@ -65,7 +66,7 @@ public class BargainIndexBolt extends AbstractBolt {
                     }
                 }
             }
-        } else if (stream.equals(Stream.TRADES)) {
+        } else if (input.getSourceComponent().equals(Component.VWAP)) {
             String stock = input.getStringByField(Field.STOCK);
             double vwap  = (Double) input.getValueByField(Field.VWAP);
             DateTime endDate = (DateTime) input.getValueByField(Field.END_DATE);

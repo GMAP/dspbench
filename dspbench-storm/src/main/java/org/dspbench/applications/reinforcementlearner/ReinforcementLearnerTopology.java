@@ -26,6 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static org.dspbench.applications.reinforcementlearner.ReinforcementLearnerConstants.*;
 
+import org.dspbench.applications.reinforcementlearner.ReinforcementLearnerConstants.Component;
+import org.dspbench.applications.reinforcementlearner.ReinforcementLearnerConstants.Conf;
+import org.dspbench.applications.reinforcementlearner.ReinforcementLearnerConstants.Field;
 import org.dspbench.sink.BaseSink;
 
 /**

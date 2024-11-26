@@ -16,16 +16,11 @@ public class TweetFilter extends BaseFunction implements Function<Tuple2<Long, T
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-
-    }
-
-    @Override
     public Boolean call(Tuple2<Long, Tuple> input) throws Exception {
         boolean res = input._2.getString("lang") != null && input._2.getString("lang").equals("en");
         
-        incReceived();
-        if (res) incEmitted();
+        //incReceived();
+        //if (res) incEmitted();
         
         return res;
     }

@@ -66,7 +66,7 @@ public class LogProcessing extends AbstractApplication {
         Dataset<Row> records = rawRecords
                 .repartition(parserThreads)
                 .as(Encoders.STRING())
-                .map(new SSCommonLogParser(config), RowEncoder.apply(schema));
+                .map(new SSCommonLogParser(config), Encoders.row(schema));
 
         Dataset<Row> volumeCount = records
                 .repartition(volumeCountThreads)

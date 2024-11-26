@@ -15,13 +15,8 @@ public class CountryCount extends BaseFunction implements Function2<Tuple, Tuple
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-
-    }
-
-    @Override
     public Tuple call(Tuple tupleOne, Tuple tupleTwo) throws Exception {
-        incReceived(2);
+        //incReceived(2);
         
         if (tupleOne == null && tupleTwo == null) return null;
         if (tupleOne == null) return tupleTwo;
@@ -29,7 +24,7 @@ public class CountryCount extends BaseFunction implements Function2<Tuple, Tuple
         
         Tuple newTuple = new Tuple(tupleOne, tupleTwo);
         newTuple.set("count", (long)tupleOne.get("count") + (long)tupleTwo.get("count"));
-        incEmitted();
+        //incEmitted();
         
         return newTuple;
     }

@@ -28,21 +28,7 @@ public class ClickStreamParser extends BaseFunction implements MapFunction<Strin
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-       /* Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-        throughput = d._1;
-        queue = d._2;
-        if (queue.size() >= 10) {
-            super.SaveMetrics(queue.take());
-        }*/
-    }
-   // private static Map<String, Long> throughput = new HashMap<>();
-
-   // private static BlockingQueue<String> queue= new ArrayBlockingQueue<>(20);
-
-    @Override
     public Row call(String value) throws Exception {
-        Calculate();
         incReceived();
         try {
             ClickStream clickstream = new Gson().fromJson(value, ClickStream.class);

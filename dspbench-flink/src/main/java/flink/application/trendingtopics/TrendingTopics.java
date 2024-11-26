@@ -71,12 +71,12 @@ public class TrendingTopics extends AbstractApplication{
 
         //Maybe Window is not the right one in this case!!!!
         DataStream<Tuple1<Rankings>> interRanker = counter.keyBy(value -> value.f0)
-            .window(TumblingProcessingTimeWindows.of(Time.seconds(counterWindowLength)))
+            .window(TumblingProcessingTimeWindows.of(Time.seconds(interRankFreq)))
             .apply(new IntermediateRanking(config, TOPK, interRankFreq))
             .setParallelism(interRankThreads);
          
         DataStream<Tuple1<Rankings>> totalRanker = interRanker
-            .windowAll(TumblingProcessingTimeWindows.of(Time.seconds(counterWindowLength)))
+            .windowAll(TumblingProcessingTimeWindows.of(Time.seconds(totalRankFreq)))
             .process(new TotalRankings(config, TOPK, totalRankFreq))
             .setParallelism(totalRankThreads);
 

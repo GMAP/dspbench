@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import scala.Tuple2;
 import spark.streaming.util.Configuration;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,18 +41,8 @@ public class SSTweetParser extends BaseFunction implements MapFunction<String, R
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-        Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-        throughput = d._1;
-        queue = d._2;
-        if (queue.size() >= 10) {
-            super.SaveMetrics(queue.take());
-        }
-    }
-
-    @Override
     public Row call(String value) throws Exception {
-        Calculate();
+        incReceived();
         try {
             value = value.trim();
 
@@ -71,11 +62,10 @@ public class SSTweetParser extends BaseFunction implements MapFunction<String, R
             String id = (String) tweet.get(ID_FIELD);
             String text = (String) tweet.get(TEXT_FIELD);
             DateTime timestamp = datetimeFormatter.parseDateTime((String) tweet.get(DATE_FIELD));
-
+            incEmitted();
             return RowFactory.create(id,
                     text,
-                    timestamp.toDate(),
-                    Instant.now().toEpochMilli());
+                    timestamp.toDate());
 
         } catch (NumberFormatException ex) {
             LOG.error("Error parsing numeric value", ex);

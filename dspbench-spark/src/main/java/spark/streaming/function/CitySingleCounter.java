@@ -17,13 +17,8 @@ public class CitySingleCounter extends BaseFunction implements PairFunction<Tupl
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-
-    }
-
-    @Override
     public Tuple2<String, Tuple> call(Tuple2<String, Tuple> t) throws Exception {
-        incReceived();
+        //incReceived();
         
         String city = t._2.getString("city");
         

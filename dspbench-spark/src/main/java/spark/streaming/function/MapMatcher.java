@@ -33,13 +33,8 @@ public class MapMatcher extends BaseFunction implements PairFunction<Tuple2<Inte
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-
-    }
-
-    @Override
     public Tuple2<Integer, Tuple> call(Tuple2<Integer, Tuple> input) throws Exception {
-        incBoth();
+        //incBoth();
         
         // force loading shape file if not loaded
         RoadGridList gridList = getSectors();

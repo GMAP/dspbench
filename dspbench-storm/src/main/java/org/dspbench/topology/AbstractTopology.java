@@ -26,15 +26,19 @@ public abstract class AbstractTopology {
     }
     
     protected AbstractSpout loadSpout() {
-        return loadSpout(BaseConf.SPOUT_CLASS, getConfigPrefix(), null);
+        return loadSpout(BaseConf.SPOUT_CLASS, getConfigPrefix(), "");
     }
     
     protected AbstractSpout loadSpout(String name) {
-        return loadSpout(BaseConf.SPOUT_CLASS, String.format("%s.%s", getConfigPrefix(), name), name);
+        return loadSpout(BaseConf.SPOUT_CLASS, getConfigPrefix(), name);
     }
     
     protected AbstractSpout loadSpout(String configKey, String configPrefix, String name) {
-        String spoutClass = config.getString(String.format(configKey, configPrefix));
+        String PH = configPrefix;
+        if(!name.isEmpty()){
+            PH = String.format("%s.%s", configPrefix, name);
+        }
+        String spoutClass = config.getString(String.format(configKey, PH));
         AbstractSpout spout = (AbstractSpout) ClassLoaderUtils.newInstance(spoutClass, "spout", getLogger());
         spout.setConfigPrefix(configPrefix);
         spout.setConfigSubPrefix(name);

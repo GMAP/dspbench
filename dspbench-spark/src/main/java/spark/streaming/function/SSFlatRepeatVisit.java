@@ -26,22 +26,12 @@ public class SSFlatRepeatVisit extends BaseFunction implements FlatMapGroupsWith
     public SSFlatRepeatVisit(Configuration config) {
         super(config);
     }
-    @Override
-    public void Calculate() throws InterruptedException {
-        /*Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-        throughput = d._1;
-        queue = d._2;
-        if (queue.size() >= 10) {
-            super.SaveMetrics(queue.take());
-        }*/
-    }
 
     @Override
     public Iterator<Row> call(String key, Iterator<Row> values, GroupState<Boolean> state) throws Exception {
         List<Row> tuples = new ArrayList<>();
         Row tuple;
         while (values.hasNext()) {
-            Calculate();
             incBoth();
             tuple = values.next();
             if (!state.exists()) {

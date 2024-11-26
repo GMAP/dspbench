@@ -13,9 +13,4 @@ public class SSFilterNull<K, V> extends BaseFunction implements FilterFunction<R
     public boolean call(Row input) throws Exception {
         return input != null;
     }
-
-    @Override
-    public void Calculate() throws InterruptedException {
-
-    }
 }

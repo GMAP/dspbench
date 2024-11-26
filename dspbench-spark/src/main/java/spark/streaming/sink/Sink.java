@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit;
  * @author mayconbordin
  */
 public class Sink<K> extends BaseFunction implements Function<JavaRDD<Tuple2<K, Tuple>>, Void> {
-    private Timer latencyTimer;
 
     public Sink(Configuration config) {
         super(config);
@@ -27,32 +26,10 @@ public class Sink<K> extends BaseFunction implements Function<JavaRDD<Tuple2<K, 
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-
-    }
-
-    @Override
     public Void call(JavaRDD<Tuple2<K, Tuple>> rdd) throws Exception {
-        incReceived(rdd.count());
+        //incReceived(rdd.count());
         
-        final long now = System.currentTimeMillis();
-        
-        rdd.foreach(new VoidFunction<Tuple2<K, Tuple>>() {
-            @Override
-            public void call(Tuple2<K, Tuple> t) throws Exception {
-                long start = t._2.getCreatedAt();
-                getLatencyTimer().update(now-start, TimeUnit.MILLISECONDS);
-            }
-        });
-
         return null;
-    }
-    
-    protected Timer getLatencyTimer() {
-        if (latencyTimer == null) {
-            latencyTimer = getMetrics().timer(String.format("%s-%d.tuple-latency", getName(), getId()));
-        }
-        return latencyTimer;
     }
     
 }

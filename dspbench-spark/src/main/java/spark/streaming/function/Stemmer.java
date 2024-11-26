@@ -17,11 +17,6 @@ public class Stemmer extends BaseFunction implements Function<Tuple2<Long, Tuple
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-
-    }
-
-    @Override
     public Tuple2<Long, Tuple> call(Tuple2<Long, Tuple> t) throws Exception {
         String text = t._2.getString("text");
 
@@ -30,7 +25,7 @@ public class Stemmer extends BaseFunction implements Function<Tuple2<Long, Tuple
         }
         
         t._2.set("text", text);
-        incBoth();
+        //incBoth();
         return t;
     }
     

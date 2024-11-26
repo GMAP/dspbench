@@ -24,6 +24,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public abstract class BaseSink implements Serializable {
+    private static final Logger LOG = LoggerFactory.getLogger(BaseSink.class);
     protected Configuration config;
     protected transient SparkSession session;
     private String sinkName;
@@ -31,34 +32,29 @@ public abstract class BaseSink implements Serializable {
     private  Counter tuplesReceived;
     private Counter tuplesEmitted;
 
+    private File fileReceived;
+    private File pathTrh;
+    private final Map<String, Long> received = new HashMap<>();
+    
+
     public void initialize(Configuration config, SparkSession session) {
         initialize(config, session, "sink");
     }
+
     public void initialize(Configuration config, SparkSession session, String sinkName) {
         this.config = config;
         this.session = session;
         this.sinkName = sinkName;
         if (config.getBoolean(config.METRICS_ENABLED, false)) {
-          /*  File pathLa = Paths.get(config.get(Configuration.METRICS_OUTPUT), "latency").toFile();
-            File pathTrh = Paths.get(config.get(Configuration.METRICS_OUTPUT), "throughput").toFile();
+            this.pathTrh = Paths.get(config.get(Configuration.METRICS_OUTPUT,"/home/IDK")).toFile();
+            
+            this.pathTrh.mkdirs();
 
-            pathLa.mkdirs();
-            pathTrh.mkdirs();
-            queue = new ArrayBlockingQueue<>(50);
-
-            this.file = Paths.get(config.get(Configuration.METRICS_OUTPUT), "throughput", this.getClass().getSimpleName() + ".csv").toFile();*/
+            //this.fileReceived = Paths.get(config.get(Configuration.METRICS_OUTPUT, "/home/IDK"), this.getClass().getSimpleName() + "-received.csv").toFile();
         }
     }
 
-//    public Configuration getConfiguration() {
-//        if (config == null) {
-//            config = Configuration.fromStr(configStr);
-//        }
-//
-//        return config;
-//    }
-
-    public abstract DataStreamWriter<Row> sinkStream(Dataset<Row> dt); //Configuration conf
+    public abstract DataStreamWriter<Row> sinkStream(Dataset<Row> dt);
 
     protected MetricRegistry getMetrics() {
         if (metrics == null) {
@@ -106,63 +102,42 @@ public abstract class BaseSink implements Serializable {
         getTuplesReceived().inc();
         getTuplesEmitted().inc();
     }
+    
     public String getName() {
         return sinkName;
     }
 
-
-   /* public void calculateLatency(long UnixTimeInit) {
-        // new Thread(() -> {
+    public void receiveThroughput() {
         if (config.getBoolean(Configuration.METRICS_ENABLED, false)) {
-            try {
-                FileWriter fw = new FileWriter(Paths.get(config.get(Configuration.METRICS_OUTPUT), "latency", this.getClass().getSimpleName() + this.sinkName + ".csv").toFile(), true);
-                fw.write(Instant.now().toEpochMilli() - UnixTimeInit + System.getProperty("line.separator"));
-                fw.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        //  }).start();
-    }
-
-    public Tuple2<Map<String, Long>, BlockingQueue<String>> calculateThroughput(Map<String, Long> throughput, BlockingQueue<String> queue) {
-        if (config.getBoolean(Configuration.METRICS_ENABLED, false)) {
-            long unixTime;
-            if (config.get(Configuration.METRICS_INTERVAL_UNIT).equals("seconds")) {
+            long unixTime = 0;
+            if (config.get(Configuration.METRICS_INTERVAL_UNIT, "seconds").equals("seconds")) {
                 unixTime = Instant.now().getEpochSecond();
             } else {
                 unixTime = Instant.now().toEpochMilli();
             }
+            Long rec = received.get(unixTime + "");
 
-            Long ops = throughput.get(unixTime + "");
-            if (ops == null) {
-                for (Map.Entry<String, Long> entry : throughput.entrySet()) {
-                    queue.add(entry.getKey() + "," + entry.getValue() + System.getProperty("line.separator"));
-                }
-                throughput.clear();
-            }
-
-            ops = (ops == null) ? 1L : ++ops;
-
-            throughput.put(unixTime + "", ops);
+            rec = (rec == null) ? 1L : ++rec;
+            received.put(unixTime + "", rec);
         }
-        return new Tuple2<>(throughput, queue);
     }
 
-
-    public void SaveMetrics(String met) {
-        new Thread(() -> {
-            try {
-                try (Writer writer = new FileWriter(this.file, true)) {
-                    writer.append(met);
-                } catch (IOException ex) {
-                    LOG.error("Error while writing the file " + this.file, ex);
+    public void SaveMetrics() {
+        this.pathTrh.mkdirs();
+        if (config.getBoolean(Configuration.METRICS_ENABLED, false)) {
+            new Thread(() -> {
+                try {
+                    try (Writer writer = new FileWriter(this.fileReceived, true)) {
+                        for (Map.Entry<String, Long> entry : this.received.entrySet()) {
+                            writer.append(entry.getKey() + "," + entry.getValue() + System.getProperty("line.separator"));
+                        }
+                    } catch (IOException ex) {
+                        LOG.error("Error while writing the file " + this.fileReceived, ex);
+                    }
+                } catch (Exception e) {
+                    LOG.error("Error while creating the file " + e.getMessage());
                 }
-            } catch (Exception e) {
-                LOG.error("Error while creating the file " + e.getMessage());
-            }
-        }).start();
-    }*/
-
-    public abstract void Calculate(int sink) throws InterruptedException, RuntimeException;
+            }).start();
+        }
+    }
 }

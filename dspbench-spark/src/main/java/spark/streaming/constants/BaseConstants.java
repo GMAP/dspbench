@@ -27,7 +27,7 @@ public interface BaseConstants {
         String KAFKA_CONSUMER_ID    = "%s.kafka.consumer.id";
         
         String SINK_THREADS        = "%s.sink.threads";
-        String PARSER_THREADS     = "fd.parser.threads";
+        String PARSER_THREADS      = "%s.parser.threads";
         String SINK_CLASS          = "%s.sink.class";
         String SINK_PATH           = "%s.sink.path";
         String SINK_FORMATTER      = "%s.sink.formatter";

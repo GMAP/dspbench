@@ -33,13 +33,8 @@ public class CommonLogParser extends BaseFunction implements Function<Tuple2<Str
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-
-    }
-
-    @Override
     public Tuple2<Long, Tuple> call(Tuple2<String, Tuple> t) throws Exception {
-        incReceived();
+        //incReceived();
         Matcher matcher = logEntryPattern.matcher(t._1);
         
         if (!matcher.matches() || NUM_FIELDS != matcher.groupCount()) {
@@ -59,7 +54,7 @@ public class CommonLogParser extends BaseFunction implements Function<Tuple2<Str
 
         long id = String.format("%s:%s", t._2.get(IP), t._2.get(TIMESTAMP)).hashCode();
         
-        incEmitted();
+        //incEmitted();
         return new Tuple2<>(id, t._2);
     }
 

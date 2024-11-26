@@ -25,6 +25,7 @@ public class FileSource extends BaseSource {
 
     @Override
     public Dataset<Row> createStream() {
+        //System.out.println(sourcePath);
         return session.readStream()
                     .format("text")
                     .option("maxFilesPerTrigger", 1)

@@ -21,18 +21,6 @@ public class SSVolumeCount extends BaseFunction implements MapGroupsWithStateFun
     public SSVolumeCount(Configuration config) {
         super(config);
     }
-    private static Map<String, Long> throughput = new HashMap<>();
-
-    private static BlockingQueue<String> queue= new ArrayBlockingQueue<>(20);
-    @Override
-    public void Calculate() throws InterruptedException {
-//        Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-//        throughput = d._1;
-//        queue = d._2;
-//        if (queue.size() >= 10) {
-//            super.SaveMetrics(queue.take());
-//        }
-    }
 
     @Override
     public Row call(Long key, Iterator<Row> values, GroupState<MutableLong> state) throws Exception {

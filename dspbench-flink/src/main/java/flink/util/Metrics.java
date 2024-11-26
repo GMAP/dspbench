@@ -40,30 +40,34 @@ public class Metrics implements Serializable{
         this.config = config;
         //getMetrics();
         //File pathLa = Paths.get(config.getString(Configurations.METRICS_OUTPUT,"/home/IDK"), "latency").toFile();
-        this.pathTrh = Paths.get(config.getString(Configurations.METRICS_OUTPUT,"/home/IDK")).toFile(); //Paths.get(config.getString(Configurations.METRICS_OUTPUT,"/home/gabriel/IDK"), "throughput").toFile();
+        if(config.getBoolean(Configurations.METRICS_ENABLED, false)){
+            this.pathTrh = Paths.get(config.getString(Configurations.METRICS_OUTPUT,"/home/IDK")).toFile(); //Paths.get(config.getString(Configurations.METRICS_OUTPUT,"/home/gabriel/IDK"), "throughput").toFile();
 
-        //pathLa.mkdirs();
-        this.pathTrh.mkdirs();
+            //pathLa.mkdirs();
+            this.pathTrh.mkdirs();
 
-        this.fileReceived = Paths.get(config.getString(Configurations.METRICS_OUTPUT, "/home/IDK"), this.getClass().getSimpleName() + "-received.csv").toFile();
-        this.fileEmitted = Paths.get(config.getString(Configurations.METRICS_OUTPUT, "/home/IDK"), this.getClass().getSimpleName() + "-emitted.csv").toFile();
+            this.fileReceived = Paths.get(config.getString(Configurations.METRICS_OUTPUT, "/home/IDK"), this.getClass().getSimpleName() + "-received.csv").toFile();
+            this.fileEmitted = Paths.get(config.getString(Configurations.METRICS_OUTPUT, "/home/IDK"), this.getClass().getSimpleName() + "-emitted.csv").toFile();
+        }
     }
 
     public void initialize(Configuration config, String name) {
         this.config = config;
         //getMetrics();
-        if (!this.configPrefix.contains(name)) {
-            this.configPrefix = String.format("%s.%s", configPrefix, name);
+        if(config.getBoolean(Configurations.METRICS_ENABLED, false)){
+            if (!this.configPrefix.contains(name)) {
+                this.configPrefix = String.format("%s.%s", configPrefix, name);
+            }
+            //File pathLa = Paths.get(config.getString(Configurations.METRICS_OUTPUT,"/home/IDK"), "latency").toFile();
+            this.pathTrh = Paths.get(config.getString(Configurations.METRICS_OUTPUT,"/home/IDK")).toFile(); // Paths.get(config.getString(Configurations.METRICS_OUTPUT,"/home/gabriel/IDK"), "throughput").toFile();
+
+            //pathLa.mkdirs();
+            this.pathTrh.mkdirs();
+
+            //this.file = Paths.get(config.getString(Configurations.METRICS_OUTPUT, "/home/IDK"), "throughput", this.getClass().getSimpleName() + "_" + this.configPrefix + ".csv").toFile();
+            this.fileReceived = Paths.get(config.getString(Configurations.METRICS_OUTPUT, "/home/IDK"), name + "-received.csv").toFile();
+            this.fileEmitted = Paths.get(config.getString(Configurations.METRICS_OUTPUT, "/home/IDK"), name + "-emitted.csv").toFile();
         }
-        //File pathLa = Paths.get(config.getString(Configurations.METRICS_OUTPUT,"/home/IDK"), "latency").toFile();
-        this.pathTrh = Paths.get(config.getString(Configurations.METRICS_OUTPUT,"/home/IDK")).toFile(); // Paths.get(config.getString(Configurations.METRICS_OUTPUT,"/home/gabriel/IDK"), "throughput").toFile();
-
-        //pathLa.mkdirs();
-        this.pathTrh.mkdirs();
-
-        //this.file = Paths.get(config.getString(Configurations.METRICS_OUTPUT, "/home/IDK"), "throughput", this.getClass().getSimpleName() + "_" + this.configPrefix + ".csv").toFile();
-        this.fileReceived = Paths.get(config.getString(Configurations.METRICS_OUTPUT, "/home/IDK"), name + "-received.csv").toFile();
-        this.fileEmitted = Paths.get(config.getString(Configurations.METRICS_OUTPUT, "/home/IDK"), name + "-emitted.csv").toFile();
     }
 
     public void calculateThroughput() {

@@ -17,30 +17,6 @@ public class SpeedCalculator extends BaseFunction implements Function2<List<Tupl
     public SpeedCalculator(Configuration config) {
         super(config);
     }
-
-    @Override
-    public void Calculate() throws InterruptedException {
-
-    }
-    
-
-   /* public Optional<Tuple> call(List<Tuple> values, Optional<Tuple> state) throws Exception {
-        incReceived(values.size());
-        
-        Tuple newState = state.or(new Tuple(values));
-        newState.set("timestamp", new Date());
-        
-        if (newState.get("roadID") == null && values.size() > 0) {
-            newState.set("roadID", values.get(0).get("roadID"));
-        }
-        
-        for (Tuple value : values) {
-            updateTuple(newState, value);
-        }
-        
-        incEmitted();
-        return Optional.of(newState);
-    }*/
     
     private void updateTuple(Tuple state, Tuple tuple) {
         int roadID = tuple.getInt("roadID");

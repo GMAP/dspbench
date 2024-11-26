@@ -28,10 +28,11 @@ public class SSTransationParser extends BaseFunction implements MapFunction<Stri
 
     @Override
     public Row call(String value) throws Exception {
-        Calculate();
+        incReceived();
+        //Calculate();
         try {
             String[] items = value.split(",", 2);
-
+            incEmitted();
             return RowFactory.create(items[0], items[1], Instant.now().toEpochMilli());
         } catch (NumberFormatException ex) {
             LOG.error("Error parsing numeric value", ex);
@@ -43,11 +44,11 @@ public class SSTransationParser extends BaseFunction implements MapFunction<Stri
     }
 
     public void Calculate() throws InterruptedException {
-        Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-        throughput = d._1;
-        queue = d._2;
-        if (queue.size() >= 10) {
-            super.SaveMetrics(queue.take());
-        }
+        //Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
+        //throughput = d._1;
+        //queue = d._2;
+        //if (queue.size() >= 10) {
+        //    super.SaveMetrics(queue.take());
+        //}
     }
 }

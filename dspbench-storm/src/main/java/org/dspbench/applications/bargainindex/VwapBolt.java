@@ -52,8 +52,8 @@ public class VwapBolt extends AbstractBolt {
 
         Vwap vwap = stocks.get(stock);
 
-        if (withinPeriod(vwap, date)) {
-            vwap.update(volume, price, date.plusSeconds(inteval));
+        if (withinPeriod(vwap, date.withTimeAtStartOfDay())) {
+            vwap.update(volume, price, date.withTimeAtStartOfDay().plusSeconds(inteval));
             if (!config.getBoolean(Configuration.METRICS_ONLY_SINK, false)) {
                 emittedThroughput();
             }
@@ -63,7 +63,7 @@ public class VwapBolt extends AbstractBolt {
                 collector.emit(new Values(stock, vwap.getVwap(), vwap.getStartDate(), vwap.getEndDate()));
             }
             
-            vwap = new Vwap(volume, price, date, date.plusSeconds(inteval));
+            vwap = new Vwap(volume, price, date.withTimeAtStartOfDay(), date.withTimeAtStartOfDay().plusSeconds(inteval));
             stocks.put(stock, vwap);
             if (!config.getBoolean(Configuration.METRICS_ONLY_SINK, false)) {
                 emittedThroughput();

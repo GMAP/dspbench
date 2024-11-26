@@ -29,6 +29,8 @@ public class MapMatching extends RichFlatMapFunction<Tuple7<String, DateTime, Bo
     private final double lonMax;
     private final String shapeFile;
 
+    private boolean firstExec = true;
+
     Configuration config;
 
     Metrics metrics = new Metrics();
@@ -68,8 +70,12 @@ public class MapMatching extends RichFlatMapFunction<Tuple7<String, DateTime, Bo
             Collector<Tuple8<String, DateTime, Boolean, Integer, Integer, Double, Double, Integer>> out) {
         
         metrics.initialize(config, this.getClass().getSimpleName());
-        //loadShapefile(config);
-        RoadGridList gridList = getSectors();
+        
+        if(firstExec){
+            loadShapefile(config);
+            firstExec = false;
+        }
+        //RoadGridList gridList = getSectors();
         if (!config.getBoolean(Configurations.METRICS_ONLY_SINK, false)) {
             metrics.receiveThroughput();
         }
@@ -86,7 +92,7 @@ public class MapMatching extends RichFlatMapFunction<Tuple7<String, DateTime, Bo
 
             GPSRecord record = new GPSRecord(longitude, latitude, speed, bearing);
 
-            int roadID = gridList.fetchRoadID(record);
+            int roadID = sectors.fetchRoadID(record);
 
             if (roadID != -1) {
                 if (!config.getBoolean(Configurations.METRICS_ONLY_SINK, false)) {

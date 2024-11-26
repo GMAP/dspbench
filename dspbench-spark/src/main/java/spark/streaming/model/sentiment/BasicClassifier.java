@@ -26,7 +26,7 @@ public class BasicClassifier implements SentimentClassifier {
         
         try {
             String path = config.get(SentimentAnalysisConstants.Config.BASIC_CLASSIFIER_PATH, DEFAULT_PATH);
-            final URL url = Resources.getResource(path);
+            final URL url = getClass().getClassLoader().getResource(path);
             final String text = Resources.toString(url, Charsets.UTF_8);
             final Iterable<String> lineSplit = Splitter.on("\n").trimResults().omitEmptyStrings().split(text);
             List<String> tabSplit;

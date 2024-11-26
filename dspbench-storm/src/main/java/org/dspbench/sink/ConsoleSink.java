@@ -17,7 +17,7 @@ public class ConsoleSink extends BaseSink {
     
     @Override
     public void execute(Tuple input) {
-        System.out.println(formatter.format(input));
+        //System.out.println(formatter.format(input));
         collector.ack(input);
         super.receiveThroughput();
     }

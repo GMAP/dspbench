@@ -38,15 +38,6 @@ public class SSMapMatcher extends BaseFunction implements MapFunction<Row, Integ
         
         loadShapefile(config);
     }
-    @Override
-    public void Calculate() throws InterruptedException {
-        Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-        throughput = d._1;
-        queue = d._2;
-        if (queue.size() >= 10) {
-            super.SaveMetrics(queue.take());
-        }
-    }
 
     private RoadGridList getSectors() {
         if (sectors == null) {
@@ -78,7 +69,7 @@ public class SSMapMatcher extends BaseFunction implements MapFunction<Row, Integ
 
     @Override
     public Integer call(Row input) throws Exception {
-        Calculate();
+        incReceived();
         RoadGridList gridList = getSectors();
 
         try {
@@ -95,6 +86,7 @@ public class SSMapMatcher extends BaseFunction implements MapFunction<Row, Integ
             int roadID = gridList.fetchRoadID(record);
 
             if (roadID != -1) {
+                incEmitted();
                 return roadID;
             }
         } catch (SQLException ex) {

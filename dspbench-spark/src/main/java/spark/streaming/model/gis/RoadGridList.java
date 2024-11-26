@@ -51,11 +51,12 @@ public class RoadGridList implements Serializable {
     private HashMap<String, RoadList> read(String path) throws IOException, SQLException {
         File file = new File(path);
         
-        ShapefileDataStore shpDataStore = new ShapefileDataStore(file.toURI().toURL());
+        ShapefileDataStore shpDataStore = new ShapefileDataStore(file.toURI().toURL()); //getClass().getClassLoader().getResource(path)
         shpDataStore.setCharset(Charset.forName("GBK"));
 
         //Feature Access
         String typeName = shpDataStore.getTypeNames()[0];  
+        System.out.println(typeName);
         FeatureSource<SimpleFeatureType, SimpleFeature> featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) shpDataStore.getFeatureSource(typeName);  
         FeatureCollection<SimpleFeatureType, SimpleFeature> result = featureSource.getFeatures();  
         FeatureIterator<SimpleFeature> iterator = result.features();  

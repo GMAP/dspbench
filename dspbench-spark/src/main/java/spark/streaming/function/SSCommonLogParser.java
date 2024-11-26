@@ -47,17 +47,6 @@ public class SSCommonLogParser extends BaseFunction implements MapFunction<Strin
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-//        Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-//        throughput = d._1;
-//        queue = d._2;
-//        if (queue.size() >= 10) {
-//            super.SaveMetrics(queue.take());
-//        }
-    }
-
-
-    @Override
     public Row call(String value) throws Exception {
         incReceived();
         Map<String, Object> entry = parseLine(value);
@@ -71,6 +60,7 @@ public class SSCommonLogParser extends BaseFunction implements MapFunction<Strin
         incEmitted();
         return RowFactory.create(entry.get(IP), entry.get(TIMESTAMP), minute, entry.get(REQUEST), entry.get(RESPONSE), entry.get(BYTE_SIZE), Instant.now().toEpochMilli());
     }
+    
     public static Map<String, Object> parseLine(String logLine) {
         Map<String, Object> entry = new HashMap<>();
 

@@ -24,16 +24,6 @@ public class SSSpikeDetector extends BaseFunction implements MapFunction<Row, Ro
 
     private static BlockingQueue<String> queue = new ArrayBlockingQueue<>(20);
 
-    @Override
-    public void Calculate() throws InterruptedException {
-        Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-        throughput = d._1;
-        queue = d._2;
-        if (queue.size() >= 10) {
-            super.SaveMetrics(queue.take());
-        }
-    }
-
     public SSSpikeDetector(Configuration config) {
         super(config);
         spikeThreshold = config.getDouble(SpikeDetectionConstants.Config.SPIKE_DETECTOR_THRESHOLD, 0.03d);
@@ -41,7 +31,6 @@ public class SSSpikeDetector extends BaseFunction implements MapFunction<Row, Ro
 
     @Override
     public Row call(Row value) throws Exception {
-        Calculate();
         incReceived();
         int deviceID = value.getInt(0);
         double movingAverageInstant = value.getDouble(1);

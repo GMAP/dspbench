@@ -1,15 +1,25 @@
 package org.dspbench.spout;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.storm.generated.AuthorizationException;
+import org.apache.storm.generated.KillOptions;
+import org.apache.storm.generated.Nimbus.Iface;
+import org.apache.storm.generated.NotAliveException;
 import org.apache.storm.kafka.spout.KafkaSpoutConfig;
 import org.apache.storm.kafka.spout.RecordTranslator;
+import org.apache.storm.kafka.spout.KafkaSpoutConfig.ProcessingGuarantee;
+import org.apache.storm.thrift.TException;
 import org.apache.storm.tuple.Fields;
+import org.apache.storm.utils.NimbusClient;
 import org.apache.storm.utils.Utils;
 import org.dspbench.constants.BaseConstants.BaseConf;
 import org.dspbench.spout.parser.Parser;
 import org.dspbench.util.config.ClassLoaderUtils;
+import org.dspbench.util.config.Configuration;
 import org.dspbench.util.stream.StreamValues;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,11 +40,11 @@ public class KafkaSpout extends AbstractSpout {
 
     @Override
     protected void initialize() {
-        String parserClass = config.getString(getConfigKey(BaseConf.SPOUT_PARSER));
-        String host        = config.getString(getConfigKey(BaseConf.KAFKA_HOST));
+        String parserClass = config.getString(getConfigKey(BaseConf.SPOUT_PARSER, true));
+        String host        = config.getString(getConfigKey(BaseConf.KAFKA_HOST, true));
         String topic       = config.getString(getConfigKey(BaseConf.KAFKA_SPOUT_TOPIC, true));
-        String consumerId  = config.getString(getConfigKey(BaseConf.KAFKA_CONSUMER_ID));
-        String path        = config.getString(getConfigKey(BaseConf.KAFKA_ZOOKEEPER_PATH));
+        String consumerId  = UUID.randomUUID().toString();//config.getString(getConfigKey(BaseConf.KAFKA_CONSUMER_ID));
+        //String path        = config.getString(getConfigKey(BaseConf.KAFKA_ZOOKEEPER_PATH));
 
         Parser parser = (Parser) ClassLoaderUtils.newInstance(parserClass, "parser", LOG);
         parser.initialize(config);
@@ -45,9 +55,9 @@ public class KafkaSpout extends AbstractSpout {
         }
 
         KafkaSpoutConfig<String, String> spoutConfig = KafkaSpoutConfig.builder(host, topic)
-                .setProp(ConsumerConfig.GROUP_ID_CONFIG, consumerId)
-                .setRecordTranslator(new ParserTranslator(parser, defaultFields))
-                .build();
+            .setProp(ConsumerConfig.GROUP_ID_CONFIG, consumerId)
+            .setRecordTranslator(new ParserTranslator(parser, defaultFields))
+            .build();
 
         spout = new org.apache.storm.kafka.spout.KafkaSpout<String, String>(spoutConfig);
 
@@ -56,8 +66,11 @@ public class KafkaSpout extends AbstractSpout {
 
     @Override
     public void nextTuple() {
+        if (!config.getBoolean(Configuration.METRICS_ONLY_SINK, false)) {
+            emittedThroughput();
+        }
+    
         spout.nextTuple();
-        recemitThroughput();
     }
 
     @Override
@@ -77,6 +90,9 @@ public class KafkaSpout extends AbstractSpout {
 
     @Override
     public void close() {
+        if (!config.getBoolean(Configuration.METRICS_ONLY_SINK, false)) {
+            SaveMetrics();
+        }
         spout.close();
     }
 

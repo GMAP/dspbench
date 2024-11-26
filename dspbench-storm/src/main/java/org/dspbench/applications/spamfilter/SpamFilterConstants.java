@@ -8,7 +8,7 @@ import org.dspbench.constants.BaseConstants;
  */
 public interface SpamFilterConstants extends BaseConstants {
     String PREFIX = "sf";
-    String DEFAULT_WORDMAP = "/spamfilter/wordmap.bin";
+    String DEFAULT_WORDMAP = "/spamfilter/wordmap.json";
     
     interface Conf extends BaseConf {
         String PARSER_THREADS     = "sf.parser.threads";

@@ -41,19 +41,8 @@ public class SSBeijingTaxiTraceParser extends BaseFunction implements MapFunctio
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-        Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-        throughput = d._1;
-        queue = d._2;
-        if (queue.size() >= 10) {
-            super.SaveMetrics(queue.take());
-        }
-    }
-
-
-    @Override
     public Row call(String value) throws Exception {
-        Calculate();
+        incReceived();
         String[] fields = value.toString().replace("\"", "").split(",");
         if (fields.length != 7)
             return null;
@@ -64,7 +53,7 @@ public class SSBeijingTaxiTraceParser extends BaseFunction implements MapFunctio
 
             //int msgId = String.format("%s:%s", carId, date.toString()).hashCode();
 
-            //incEmitted();
+            incEmitted();
             return RowFactory.create(carId,
                     date.toString(),
                     true,

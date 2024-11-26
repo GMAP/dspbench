@@ -1,5 +1,6 @@
 package spark.streaming.model.window;
 
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.Random;
  * Author: Thilina
  * Date: 11/22/14
  */
-public class SlidingWindow {
+public class SlidingWindow implements Serializable {
     private ArrayDeque<SlidingWindowEntry> window = new ArrayDeque<SlidingWindowEntry>();
     private long tsStart;
     private long tsEnd;

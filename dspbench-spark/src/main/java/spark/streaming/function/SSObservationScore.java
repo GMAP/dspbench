@@ -42,26 +42,17 @@ public class SSObservationScore extends BaseFunction implements FlatMapFunction<
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-        Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-        throughput = d._1;
-        queue = d._2;
-        if (queue.size() >= 10) {
-            super.SaveMetrics(queue.take());
-        }
-    }
-
-    @Override
     public Iterator<Row> call(Row input) throws Exception {
-        Calculate();
         List<Row> tuples = new ArrayList<>();
         long timestamp = input.getLong(1);
+        incReceived();
         //TODO: implements spark windowing method
         if (timestamp > previousTimestamp) {
             // a new batch of observation, calculate the scores of old batch and then emit
             if (!observationList.isEmpty()) {
                 List<ScorePackage> scorePackageList = dataInstanceScorer.getScores(observationList);
                 for (ScorePackage scorePackage : scorePackageList) {
+                    incEmitted();
                     tuples.add(RowFactory.create(scorePackage.getId(), scorePackage.getScore(), previousTimestamp, scorePackage.getObj(), input.get(input.size() - 1)));
                 }
                 observationList.clear();

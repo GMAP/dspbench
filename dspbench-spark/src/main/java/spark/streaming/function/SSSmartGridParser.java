@@ -26,30 +26,26 @@ public class SSSmartGridParser extends BaseFunction implements MapFunction<Strin
     }
 
     @Override
-    public void Calculate() throws InterruptedException {
-
-    }
-
-    @Override
     public Row call(String input) throws Exception {
+        incReceived();
         String[] fields = input.split(",");
 
-        if (fields.length != 7)
-            return null;
+        if (fields.length == 7){
+            try{
+                String id = fields[ID_FIELD];
+                long timestamp = Long.parseLong(fields[TIMESTAMP_FIELD]);
+                double value = Double.parseDouble(fields[VALUE_FIELD]);
+                int property = Integer.parseInt(fields[PROPERTY_FIELD]);
+                String plugId = fields[PLUG_ID_FIELD];
+                String householdId = fields[HOUSEHOLD_ID_FIELD];
+                String houseId = fields[HOUSE_ID_FIELD];
 
-        try{
-            String id = fields[ID_FIELD];
-            long timestamp = Long.parseLong(fields[TIMESTAMP_FIELD]);
-            double value = Double.parseDouble(fields[VALUE_FIELD]);
-            int property = Integer.parseInt(fields[PROPERTY_FIELD]);
-            String plugId = fields[PLUG_ID_FIELD];
-            String householdId = fields[HOUSEHOLD_ID_FIELD];
-            String houseId = fields[HOUSE_ID_FIELD];
+                incEmitted();
+                return RowFactory.create(id, timestamp, value, property, plugId, householdId, houseId);
 
-            return RowFactory.create(id, timestamp, value, property, plugId, householdId, houseId);
-
-        } catch (NumberFormatException ex) {
-            LOG.warn("Error parsing numeric value", ex);
+            } catch (NumberFormatException ex) {
+                LOG.warn("Error parsing numeric value", ex);
+            }
         }
 
         return null;

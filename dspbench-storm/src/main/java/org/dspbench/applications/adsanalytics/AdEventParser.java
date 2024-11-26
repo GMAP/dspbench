@@ -1,5 +1,6 @@
 package org.dspbench.applications.adsanalytics;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import org.dspbench.util.stream.StreamValues;
  *
  * @author mayconbordin
  */
-public class AdEventParser extends Parser {
+public class AdEventParser extends Parser implements Serializable {
     private static final int CLICKS        = 0;
     private static final int VIEWS         = 1;
     private static final int DISPLAY_URL   = 2;

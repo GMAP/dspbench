@@ -19,11 +19,6 @@ public class SSSlidingWindow extends BaseFunction implements MapFunction<Row, Ro
         window = new SlidingWindow(1 * 60 * 60);
     }
 
-    @Override
-    public void Calculate() throws InterruptedException {
-
-    }
-
     private SlidingWindow window;
 
     @Override

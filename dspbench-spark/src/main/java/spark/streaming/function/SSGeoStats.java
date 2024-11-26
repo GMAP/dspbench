@@ -26,16 +26,6 @@ public class SSGeoStats extends BaseFunction implements FlatMapGroupsWithStateFu
     public SSGeoStats(Configuration config) {
         super(config);
     }
-    @Override
-    public void Calculate() throws InterruptedException {
-//        Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-//        throughput = d._1;
-//        queue = d._2;
-//        if (queue.size() >= 10) {
-//            super.SaveMetrics(queue.take());
-//        }
-    }
-
 
     @Override
     public Iterator<Row> call(String key, Iterator<Row> values, GroupState<CountryStats> state) throws Exception {

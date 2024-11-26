@@ -25,6 +25,7 @@ import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
 import spark.streaming.util.Tuple;
 
+import java.beans.Encoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,7 +64,7 @@ public class TrafficMonitoring extends AbstractApplication {
         Dataset<Row> records = rawRecords
                 .repartition(parserThreads)
                 .as(Encoders.STRING())
-                .map(new SSBeijingTaxiTraceParser(config), RowEncoder.apply(schema));
+                .map(new SSBeijingTaxiTraceParser(config), Encoders.row(schema));
 
         KeyValueGroupedDataset<Integer, Row> roads = records.filter(new SSFilterNull<>())
                 .repartition(mapMatcherThreads)

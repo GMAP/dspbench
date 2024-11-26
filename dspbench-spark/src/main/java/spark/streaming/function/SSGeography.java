@@ -30,15 +30,6 @@ public class SSGeography extends BaseFunction implements MapFunction<Row, Row> {
         super(config);
         ipResolver = config.get(BaseConstants.BaseConfig.GEOIP_INSTANCE);
     }
-    @Override
-    public void Calculate() throws InterruptedException {
-//        Tuple2<Map<String, Long>, BlockingQueue<String>> d = super.calculateThroughput(throughput, queue);
-//        throughput = d._1;
-//        queue = d._2;
-//        if (queue.size() >= 10) {
-//            super.SaveMetrics(queue.take());
-//        }
-    }
 
     @Override
     public Row call(Row input) throws Exception {

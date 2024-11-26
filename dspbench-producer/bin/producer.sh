@@ -15,11 +15,20 @@ usage() {
 BASE_DIR=$(dirname $0)
 COMMAND=$1
 JAR_FILE=$BASE_DIR/streamer-producer.jar
-PID_FILE=$BASE_DIR/producer.pid
-LOG_FILE=$BASE_DIR/producer.log
+PID_FILE=$BASE_DIR/$3.pid
+LOG_FILE=$BASE_DIR/$3.log
 
 if [ "$COMMAND" == "start" ]; then
     echo -ne "Starting producer... "
+    echo -ne "" > $PID_FILE
+ 
+    nohup java -jar $JAR_FILE start $2 $3 $4 $5 $6 > $LOG_FILE 2>&1 &
+    echo $! >> $PID_FILE
+
+    echo -ne "DONE\n"
+    exit 0
+elif [ "$COMMAND" == "create_topic" ]; then
+    echo -ne "Creating Topic... "
     echo -ne "" > $PID_FILE
  
     nohup java -jar $JAR_FILE start $2 $3 $4 $5 $6 > $LOG_FILE 2>&1 &
@@ -34,8 +43,8 @@ elif [ "$COMMAND" == "stop" ]; then
         kill -9 $pid
     done <$PID_FILE
 
-    echo -ne "Removing topic..."
-    java -jar $JAR_FILE stop $2 $3 >> $LOG_FILE 2>&1
+    #echo -ne "Removing topic..."
+    #java -jar $JAR_FILE stop $2 $3 >> $LOG_FILE 2>&1
     
     echo -ne "" > $PID_FILE
     echo -ne "DONE\n"

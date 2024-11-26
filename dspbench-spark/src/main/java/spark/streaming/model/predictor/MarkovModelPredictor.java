@@ -17,7 +17,7 @@
 
 package spark.streaming.model.predictor;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.streaming.constants.FraudDetectionConstants;
@@ -61,7 +61,7 @@ public class MarkovModelPredictor extends ModelBasedPredictor implements Seriali
         String model;
         
         if (StringUtils.isBlank(mmKey)) {
-            model = new MarkovModelResourceSource().getModel(FraudDetectionConstants.DEFAULT_MODEL);
+            model = getClass().getClassLoader().getResource(FraudDetectionConstants.DEFAULT_MODEL).getPath();//new MarkovModelResourceSource().getModel(FraudDetectionConstants.DEFAULT_MODEL);
         } else {
             model = new MarkovModelFileSource().getModel(mmKey);
         }

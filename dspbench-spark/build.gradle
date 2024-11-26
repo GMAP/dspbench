@@ -26,12 +26,19 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'org.apache.spark', name: 'spark-core_2.13', version: '3.3.1'
-    implementation group: 'org.apache.spark', name: 'spark-sql_2.13', version: '3.3.1'
-    //implementation group: 'org.apache.hadoop', name: 'hadoop-hdfs', version: '3.3.3'
-   // implementation group: 'org.apache.spark', name: 'spark-streaming_2.13', version: '3.3.0'
-    implementation group: 'org.apache.spark', name: 'spark-sql-kafka-0-10_2.13', version: '3.3.0'
-    implementation group: 'org.apache.spark', name: 'spark-streaming-kafka-0-10_2.13', version: '3.3.0'
+    //implementation group: 'org.apache.spark', name: 'spark-core_2.13', version: '3.3.1'
+    //implementation group: 'org.apache.spark', name: 'spark-sql_2.13', version: '3.3.1'
+    ////implementation group: 'org.apache.hadoop', name: 'hadoop-hdfs', version: '3.3.3'
+    ////implementation group: 'org.apache.spark', name: 'spark-streaming_2.13', version: '3.3.0'
+    //implementation group: 'org.apache.spark', name: 'spark-sql-kafka-0-10_2.13', version: '3.3.0'
+    //implementation group: 'org.apache.spark', name: 'spark-streaming-kafka-0-10_2.13', version: '3.3.0'
+
+    implementation group: 'org.apache.spark', name: 'spark-core_2.13', version: '3.5.3'
+    implementation group: 'org.apache.spark', name: 'spark-sql_2.13', version: '3.5.3'
+    //compileOnly group: 'org.apache.spark', name: 'spark-streaming_2.13', version: '3.5.3'
+    implementation group: 'org.apache.spark', name: 'spark-sql-kafka-0-10_2.13', version: '3.5.3'
+    implementation group: 'org.apache.spark', name: 'spark-streaming-kafka-0-10_2.13', version: '3.5.3'
+
 
     //implementation group: 'redis.clients', name: 'jedis', version: '3.5.1'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.0'

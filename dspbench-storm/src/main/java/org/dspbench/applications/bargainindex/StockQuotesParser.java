@@ -3,6 +3,7 @@ package org.dspbench.applications.bargainindex;
 import com.google.common.collect.ImmutableList;
 import org.dspbench.spout.parser.Parser;
 import org.dspbench.util.stream.StreamValues;
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -25,7 +26,7 @@ public class StockQuotesParser extends Parser {
     public List<StreamValues> parse(String input) {
         String[] record = input.split(",");
 
-        if (record.length != 7)
+        if (record.length != 8)
             return null;
 
         // exclude header
@@ -34,7 +35,7 @@ public class StockQuotesParser extends Parser {
         }
 
         String stock      = record[NAME];
-        Date date         = dtFormatter.parseLocalDate(record[DATE]).toDate();
+        DateTime date         = dtFormatter.parseDateTime(record[DATE]).withTimeAtStartOfDay();
         double open       = Double.parseDouble(record[OPEN]);
         double high       = Double.parseDouble(record[HIGH]);
         double low        = Double.parseDouble(record[LOW]);

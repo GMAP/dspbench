@@ -39,13 +39,12 @@ public class SpikeDetection extends AbstractApplication {
         env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         // Spout
-        //DataStream<String> data = createSource();
+        DataStream<String> data = createSource();
 
         // Parser
-        //DataStream<Tuple3<String, Date, Double>> dataParse = data.flatMap(new SensorParser(config))
-                //.setParallelism(parserThreads);
+        DataStream<Tuple3<String, Date, Double>> dataParse = data.flatMap(new SensorParser(config)).setParallelism(parserThreads);
 
-        DataStream<Tuple3<String, Date, Double>> dataParse = env.addSource(new SDInfSource(config, getConfigPrefix())).setParallelism(parserThreads);
+        //DataStream<Tuple3<String, Date, Double>> dataParse = env.addSource(new SDInfSource(config, getConfigPrefix())).setParallelism(parserThreads);
 
         // Process
         DataStream<Tuple3<String, Double, Double>> movingAvg = dataParse.filter(value -> (value.f0 != null))

@@ -53,7 +53,7 @@ public class AdsAnalyticsTopology extends AbstractTopology {
         impressionsSpout.setFields(spoutFields);
         
         builder.setSpout(AdsAnalyticsConstants.Component.CLICK_SPOUT, clickSpout, clickSpoutThreads);
-        builder.setSpout(AdsAnalyticsConstants.Component.IMPRESSIONS_SPOUT, clickSpout, impressionsSpoutThreads);
+        builder.setSpout(AdsAnalyticsConstants.Component.IMPRESSIONS_SPOUT, impressionsSpout, impressionsSpoutThreads);
 
         builder.setBolt(AdsAnalyticsConstants.Component.CTR, new RollingCtrBolt(ctrFrequency), ctrThreads)
                .fieldsGrouping(AdsAnalyticsConstants.Component.CLICK_SPOUT, new Fields(AdsAnalyticsConstants.Field.QUERY_ID, AdsAnalyticsConstants.Field.AD_ID))
